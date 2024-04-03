@@ -1,0 +1,153 @@
+<template>
+  <div class="chat-window" ref="chatWindow">
+    <template v-if="selectedChat && Array.isArray(selectedChat.messages)">
+      <div v-for="message in selectedChat.messages" :key="message.id" :class="{'message-wrapper-expert': message.sender_type === 'expert', 'message-wrapper-parent': message.sender_type === 'parent'}">
+        <div :class="{'avatar-expert': message.sender_type === 'expert', 'avatar-parent': message.sender_type === 'parent'}">
+          <img :src="message.sender_type === 'parent' ? user : expert" alt=""/> 
+        </div>
+        <div :class="{'speech-expert': message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}"></div>
+        <div :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert', 'pre-wrap': true}">
+          {{ message.content }}
+        </div>
+      </div>
+    </template>
+    <div class="expert_welcome">
+      <div>专家已真身介入</div>
+    </div>
+  </div>
+</template>
+
+<script>
+// import EXPERT from "../assets/advisor.png"
+export default {
+  name: 'ChatWindow',
+  props: ['selectedChat'],
+  watch: {
+    'selectedChat.messages': function() {
+      // use Vue.nextTick to ensure scrolling after the update of DOM
+      this.$nextTick(() => {
+        this.scrollToBottom();
+      });
+    }
+  },
+  // setup(){
+  //   //简单数据的响应
+  //   const imgUrl=ref('../assets/user2.png') 
+  //   return {imgUrl}
+  // },
+  data(){
+    return{
+      user:require("@/assets/user2.png"),
+      expert:require("@/assets/gpt.png")
+    }
+  },
+  methods: {
+    scrollToBottom() {
+      const chatWindow = this.$refs.chatWindow;
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+    }
+  },
+  mounted() {
+    this.scrollToBottom();
+  },
+  updated() {
+    this.scrollToBottom();
+  }
+}
+</script>
+
+<style>
+.message-wrapper-parent {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+.message-wrapper-expert {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+.avatar-expert img{
+  width:30px;
+}
+
+.avatar-parent img{
+  width:30px;
+}
+
+.parent-message {
+  background-color: #e9ecef;
+  /* color: white; */
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 70%;
+  display: inline-block;
+  word-wrap: break-word;
+}
+
+.expert-message {
+  background-color: #87CEEB;
+  color:white;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  max-width: 70%;
+  display: inline-block;
+  word-wrap: break-word;
+  align-self: flex-start;
+}
+
+.speech-expert{
+  margin-top:8px;
+  width:0;
+  height:0;
+  /* border:10px; */
+  border-left:6px solid #87CEEB;
+  border-right:6px solid transparent;
+  border-bottom:6px solid transparent;
+  border-top:6px solid transparent;
+}
+
+.speech-parent{
+  margin-top:8px;
+  width:0;
+  height:0;
+  /* border:10px; */
+  border-right:6px solid #e9ecef;
+  border-left:6px solid transparent;
+  border-bottom:6px solid transparent;
+  border-top:6px solid transparent;
+}
+
+
+.expert_welcome{
+  width:100%;
+  height:30px;
+  display:flex;
+  justify-content: center;
+}
+.expert_welcome div{
+  background-color:grey;
+  border-radius:10px;
+  opacity:0.5;
+  text-indent:3px;
+  color:white;
+  width:120px;
+
+}
+
+
+.chat-window {
+  margin-top: 10px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+</style>
