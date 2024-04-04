@@ -10,10 +10,10 @@
           {{ message.content }}
         </div>
       </div>
+      <div class="expert_welcome" v-if="welcome_expert">
+        <div>专家已真身介入</div>
+      </div>
     </template>
-    <div class="expert_welcome">
-      <div>专家已真身介入</div>
-    </div>
   </div>
 </template>
 
@@ -51,10 +51,23 @@ export default {
       });
       return flatMessages;
     },
+    showExpertWelcome() {
+    if (!this.selectedChat || !Array.isArray(this.selectedChat.messages)) {
+      return false;
+    }
+    const messages = this.selectedChat.messages;
+    const lastMessage = messages[messages.length - 1];
+    const secondLastMessage = messages[messages.length - 2];
 
+    return secondLastMessage.sender_type === 'bot' && 
+           lastMessage.sender_type === 'expert' && 
+           this.selectedChat.status === 0;
+  
+  }
   },
   data(){
     return{
+      welcome_expert:false,
       // parent:require("@/assets/user2.png"),
       // bot:require("@/assets/gpt.png"),
       // expert:require("@/assets/advisor.png")

@@ -48,20 +48,6 @@ export default {
       // Emit an event to the parent component to create a new chat
       this.$emit('createChat');
     },
-    isChatDate(chat, days) {
-      const chatDate = new Date(chat.lastMessageTimestamp);
-      const today = new Date();
-      const dayDifference = (today - chatDate) / (1000 * 3600 * 24);
-      if (days === 0) {
-        return dayDifference < 1;
-      } else if (days === 1) {
-        return dayDifference >= 1 && dayDifference < 2;
-      } else if (days === 7) {
-        return dayDifference >= 2 && dayDifference < 7;
-      } else {
-        return dayDifference >= 7;
-      }
-    },
     selectChat(chat) {
       this.$emit('chatSelected', chat);
     },
