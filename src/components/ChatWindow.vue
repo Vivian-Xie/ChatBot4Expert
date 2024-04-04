@@ -1,12 +1,12 @@
 <template>
   <div class="chat-window" ref="chatWindow">
     <template v-if="selectedChat && Array.isArray(selectedChat.messages)">
-      <div v-for="message in selectedChat.messages" :key="message.id" :class="{'message-wrapper-expert': message.sender_type === 'expert', 'message-wrapper-parent': message.sender_type === 'parent'}">
-        <div :class="{'avatar-expert': message.sender_type === 'expert', 'avatar-parent': message.sender_type === 'parent'}">
-          <img :src="message.sender_type === 'parent' ? user : expert" alt=""/> 
+      <div v-for="message in selectedChat.messages" :key="message.id" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}">
+        <div :class="{'avatar-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'avatar-parent': message.sender_type === 'parent'}">
+          <img :src="require('../assets/'+message.sender_type+'.png')"/>
         </div>
-        <div :class="{'speech-expert': message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}"></div>
-        <div :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert', 'pre-wrap': true}">
+        <div :class="{'speech-expert': message.sender_type === 'bot'||message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}"></div>
+        <div :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}">
           {{ message.content }}
         </div>
       </div>
@@ -30,15 +30,12 @@ export default {
       });
     }
   },
-  // setup(){
-  //   //简单数据的响应
-  //   const imgUrl=ref('../assets/user2.png') 
-  //   return {imgUrl}
-  // },
+
   data(){
     return{
-      user:require("@/assets/user2.png"),
-      expert:require("@/assets/gpt.png")
+      // parent:require("@/assets/user2.png"),
+      // bot:require("@/assets/gpt.png"),
+      // expert:require("@/assets/advisor.png")
     }
   },
   methods: {
