@@ -2,12 +2,12 @@
   <div class="chat-list">
     <!-- <button @click="createChat" class="create-chat-btn">创建新对话</button> -->
     <div>专家界面demo</div>
-    <div v-if="chatsToday.length > 0">
+    <div v-if="chatsUrgent.length > 0">
       <div class="chat-date-header">
         <img src="../assets/up.png" alt="">
         可信度不高，待真身解答
       </div>
-      <div v-for="chat in chatsToday" :key="chat.id"
+      <div v-for="chat in chatsUrgent" :key="chat.id"
           :class="{ 'selected': chat.id === selectedChatId }"
           class="chat-item"
           @click="selectChat(chat)">
@@ -16,9 +16,9 @@
       </div>
     </div>
 
-    <div v-if="chatsYesterday.length > 0">
-      <div class="chat-date-header">分身自动回复</div>
-      <div v-for="chat in chatsYesterday" :key="chat.id"
+    <div v-if="chatsPending.length > 0">
+      <div class="chat-date-header">分身回复待确认</div>
+      <div v-for="chat in chatsPending" :key="chat.id"
           :class="{ 'selected': chat.id === selectedChatId }"
           class="chat-item"
           @click="selectChat(chat)">
@@ -26,20 +26,10 @@
       </div>
     </div>
 
-    <div v-if="chatsWeek.length > 0">
-      <div class="chat-date-header">分身自动回复</div>
-      <div v-for="chat in chatsWeek" :key="chat.id"
-          :class="{ 'selected': chat.id === selectedChatId }"
-          class="chat-item"
-          @click="selectChat(chat)">
-          <!-- {{ chat }} -->
-        {{ chat.title }}
-      </div>
-    </div>
 
-    <div v-if="chatsOlder.length > 0">
-      <div class="chat-date-header">已解决</div>
-      <div v-for="chat in chatsOlder" :key="chat.id"
+    <div v-if="chatsAuto.length > 0">
+      <div class="chat-date-header">已自动托管</div>
+      <div v-for="chat in chatsAuto" :key="chat.id"
           :class="{ 'selected': chat.id === selectedChatId }"
           class="chat-item"
           @click="selectChat(chat)">
@@ -77,21 +67,14 @@ export default {
     },
   },
   computed: {
-    chatsToday() {
-      return this.chats.filter(chat => this.isChatDate(chat, 0))
-        .sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
+    chatsUrgent() {
+      return this.chats.filter(chat => chat.status==0);
     },
-    chatsYesterday() {
-      return this.chats.filter(chat => this.isChatDate(chat, 1))
-        .sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
+    chatsPending() {
+      return this.chats.filter(chat => chat.status==1);
     },
-    chatsWeek() {
-      return this.chats.filter(chat => this.isChatDate(chat, 7))
-        .sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
-    },
-    chatsOlder() {
-      return this.chats.filter(chat => this.isChatDate(chat, 8))
-        .sort((a, b) => new Date(b.lastMessageTimestamp) - new Date(a.lastMessageTimestamp));
+    chatsAuto() {
+     return this.chats.filter(chat => chat.status==2);
     },
   }
 }

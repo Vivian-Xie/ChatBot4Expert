@@ -1,7 +1,7 @@
 <template>
   <div class="chat-window" ref="chatWindow">
-    <template v-if="selectedChat && Array.isArray(selectedChat.messages)">
-      <div v-for="message in selectedChat.messages" :key="message.id" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}">
+    <template v-if="selectedChat && Array.isArray(processedMessages)">
+      <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}">
         <div :class="{'avatar-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'avatar-parent': message.sender_type === 'parent'}">
           <img :src="require('../assets/'+message.sender_type+'.png')"/>
         </div>
@@ -18,10 +18,10 @@
 </template>
 
 <script>
-// import EXPERT from "../assets/advisor.png"
+
 export default {
   name: 'ChatWindow',
-  props: ['selectedChat'],
+  props: ['chats','selectedChat'],
   watch: {
     'selectedChat.messages': function() {
       // use Vue.nextTick to ensure scrolling after the update of DOM
@@ -30,7 +30,29 @@ export default {
       });
     }
   },
+  computed: {
+    processedMessages() {
+      if (!this.selectedChat || !Array.isArray(this.selectedChat.messages)) {
+        return [];
+      }
+      const filteredMessages = this.selectedChat.messages.filter(message => message.score >= 0.5);
+      const processedMessages = filteredMessages.map(message => ({
+        ...message,
+        content: message.content.split('\n\n').filter(part => part.trim() !== '')
+      }));
+      const flatMessages = [];
+      processedMessages.forEach(message => {
+        message.content.forEach(contentPart => {
+          flatMessages.push({
+            ...message,
+            content: contentPart
+          });
+        });
+      });
+      return flatMessages;
+    },
 
+  },
   data(){
     return{
       // parent:require("@/assets/user2.png"),
@@ -122,17 +144,19 @@ export default {
 
 .expert_welcome{
   width:100%;
-  height:30px;
+  height:25px;
   display:flex;
   justify-content: center;
 }
 .expert_welcome div{
+  padding-left:5px;
+  padding-right:5px;
   background-color:grey;
   border-radius:10px;
   opacity:0.5;
   text-indent:3px;
   color:white;
-  width:120px;
+  width:130px;
 
 }
 
