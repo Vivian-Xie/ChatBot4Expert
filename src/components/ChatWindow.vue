@@ -1,6 +1,9 @@
 <template>
   <div class="chat-window" ref="chatWindow">
     <template v-if="selectedChat && Array.isArray(processedMessages)">
+      <div class="expert_welcome" v-if="showExpertWelcome">
+        <div>专家已真身介入</div>
+      </div>
       <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}">
         <div :class="{'avatar-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'avatar-parent': message.sender_type === 'parent'}">
           <img :src="require('../assets/'+message.sender_type+'.png')"/>
@@ -10,11 +13,22 @@
           {{ message.content }}
         </div>
       </div>
-      <div class="expert_welcome" v-if="welcome_expert">
-        <div>专家已真身介入</div>
-      </div>
     </template>
-  </div>
+  <!-- <ul class="table-right-menu">
+    <li
+      v-for="item in menulists"
+      :key="item.btnName"
+       @click.stop="fnHandler(item)"
+    >
+      <div class="table-right-menu-item-btn">
+        <i class="el-icon-ele" />
+        <span>复制数据</span>
+      </div>
+    </li>
+  </ul>
+-->
+  </div> 
+
 </template>
 
 <script>
@@ -52,16 +66,12 @@ export default {
       return flatMessages;
     },
     showExpertWelcome() {
-    if (!this.selectedChat || !Array.isArray(this.selectedChat.messages)) {
+    if (!this.selectedChat || !Array.isArray(this.selectedChat.messages) || this.selectedChat.messages.length < 2) {
       return false;
     }
-    const messages = this.selectedChat.messages;
-    const lastMessage = messages[messages.length - 1];
-    const secondLastMessage = messages[messages.length - 2];
+    // console.log("what is"+this.selectedChat.messages[0]);
 
-    return secondLastMessage.sender_type === 'bot' && 
-           lastMessage.sender_type === 'expert' && 
-           this.selectedChat.status === 0;
+    return false;
   
   }
   },

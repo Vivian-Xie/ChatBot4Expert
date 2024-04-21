@@ -121,9 +121,12 @@ html, body {
 }
 #chatlist{
   width:20%;
+  height:100vh;
+  overflow:scroll;
 
 }
 #chatwin{
   width:80%;
+  height:100vh;
 }
 </style>
