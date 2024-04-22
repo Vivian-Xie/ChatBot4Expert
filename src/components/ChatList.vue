@@ -23,6 +23,7 @@
           class="chat-item"
           @click="selectChat(chat)">
         {{ chat.title }}
+        <img class="rank-icon" src="../assets/rank.png" alt="rankAll" @click="rankAll(chat)">
       </div>
     </div>
 
@@ -51,6 +52,10 @@ export default {
     selectChat(chat) {
       this.$emit('chatSelected', chat);
     },
+    rankAll(chat){
+      console.log(chat);
+      
+    }
   },
   computed: {
     chatsUrgent() {
@@ -97,6 +102,10 @@ export default {
   border-radius: 8px; /* 轻微的圆角效果 */
   background-color: #f8f9fa; /* 聊天项的背景色 */
   transition: background-color 0.2s; /* 添加过渡效果使得颜色变化更平滑 */
+  position:relative;
+}
+.chat-item:hover{
+  background-color: rgb(211,211,211,0.7);
 }
 
 .selected {
@@ -111,5 +120,16 @@ float:right;
 color:red;
 font-size: small;
 font-weight:600;
+}
+
+.rank-icon{
+  width:25px;
+  position:absolute;
+  right:-50px;
+  transition: left 0.3s ease;
+}
+
+.chat-item:hover .rank-icon{
+  right:10px;
 }
 </style>

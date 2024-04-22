@@ -6,10 +6,11 @@
           <chat-list :chats="chats" :selectedChatId="selectedChatId" @chatSelected="selectChat" @createChat="createNewChat"></chat-list>
         </div>
         <div class="col-10 d-flex flex-column" id="chatwin">
-          <chat-window :selectedChat="selectedChat" class="flex-grow-1 overflow-auto"></chat-window>
+          <chat-window :selectedChat="selectedChat" class="flex-grow-1 overflow-auto" ></chat-window>
           <input-area v-if="selectedChat" @messageSent="sendMessage" class="mt-auto"></input-area>
         </div>
         
+
       </div>
     </div>
   </div>
@@ -19,6 +20,7 @@
 import ChatList from './components/ChatList.vue';
 import ChatWindow from './components/ChatWindow.vue';
 import InputArea from './components/InputArea.vue';
+// import ContextMenu from './components/ContextMenu.vue';
 import api from './api';
 
 export default {
@@ -26,16 +28,21 @@ export default {
   components: {
     ChatList,
     ChatWindow,
-    InputArea
+    InputArea,
+    // ContextMenu
+
   },
   data() {
     return {
       chats: [],
       selectedChatId: null,
       selectedChat: null,
+    
     };
   },
+  
   methods: {
+
     createNewChat() {
       const userId = 0;
       const expertId = 1;
