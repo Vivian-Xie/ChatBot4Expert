@@ -9,7 +9,7 @@
           <chat-window :selectedChat="selectedChat" class="flex-grow-1 overflow-auto" ></chat-window>
           <input-area v-if="selectedChat" @messageSent="sendMessage" class="mt-auto"></input-area>
         </div>
-        
+      
 
       </div>
     </div>
@@ -29,6 +29,7 @@ export default {
     ChatList,
     ChatWindow,
     InputArea,
+    ExpertFeedback,
     // ContextMenu
 
   },
@@ -44,7 +45,7 @@ export default {
   methods: {
 
     createNewChat() {
-      const userId = 0;
+      const userId = 1;
       const expertId = 1;
       api.createChat(userId, expertId)
         .then(response => {
@@ -66,7 +67,7 @@ export default {
     sendMessage(content) {
       if (this.selectedChat && content) {
         // ToDo: get user id
-        const userId = 0;
+        const userId = 1;
 
         api.sendMessage(this.selectedChat.id, userId, 'expert', content)
           .then(response => {
@@ -95,9 +96,9 @@ export default {
     },
     fetchChatsAndMessages() {
       // ToDo: get user id
-      const userId = 0;
+      const userId = 1;
 
-      api.getUserChats(userId)
+      api.getExpertChats(userId)
         .then(response => {
           console.log('Chats and messages received:', response.data);
           this.chats = response.data;

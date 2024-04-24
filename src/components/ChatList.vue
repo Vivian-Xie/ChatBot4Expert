@@ -23,7 +23,9 @@
           class="chat-item"
           @click="selectChat(chat)">
         {{ chat.title }}
-        <img class="rank-icon" src="../assets/rank.png" alt="rankAll" @click="rankAll(chat)">
+        <el-button type="text" @click="open">
+          <img class="rank-icon" src="../assets/rank.png" alt="rankAll" @click="rankAll(chat)">
+        </el-button>
       </div>
     </div>
 
@@ -55,7 +57,26 @@ export default {
     rankAll(chat){
       console.log(chat);
       
-    }
+    },
+    open() {
+        this.$prompt('请对此次对话做出评价', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          inputErrorMessage: '输入内容为空'
+        }).then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '你的邮箱是: ' + value
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
+      }
+    
   },
   computed: {
     chatsUrgent() {

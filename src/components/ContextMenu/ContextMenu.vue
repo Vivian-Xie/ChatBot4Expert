@@ -29,10 +29,14 @@
       methods: {
           close() {
               this.$emit("hide");
+
           },
           clickHandler(item) {
               if (typeof item.onClick === "function") {
                   item.onClick();
+                  console.log(item);
+                  this.$emit("pop",item);
+                  
               }
               this.close();
           },

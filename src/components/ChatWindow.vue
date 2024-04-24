@@ -4,32 +4,36 @@
       <div class="expert_welcome" v-if="showExpertWelcome">
         <div>专家已真身介入</div>
       </div>
-      <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}" >
-        <div class="chat-content">
+      <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}" @pop="showt(e,index)"  @mouseenter="chow(index)">
+        <div class="chat-content" >
           <div :class="{'avatar-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'avatar-parent': message.sender_type === 'parent'}">
             <img :src="require('../assets/'+message.sender_type+'.png')"/>
           </div>
           <div :class="{'speech-expert': message.sender_type === 'bot'||message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}" ></div>
-          <div :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" >
+          <div  @pop="showt(item)" :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" :style="colorStyle" >
             {{ message.content }}
           </div>
+          <div class="score">
+            <span style="display: inline">打分：</span>
+            <el-rate v-model="value1"></el-rate>
+           
+          </div>
         </div>
-        <div style="height:100px;background-color:blue"  v-if="message.showRate">
-          <span class="rate" :class="{'disabled':disabled}" style="cursor: pointer">
-            <i v-for="i in 5" class="iconfont" :key="`outer-${i}`" @mouseenter="disabled?'':curScore=i" @mouseleave="disabled?'':curScore=''" @click="disabled?'':setScore(i)" :class="getClass(i)">
-              <i v-if="disabled&&i==Math.floor(score)+1" class="iconfont icon-star" :style="'width:'+width"></i>
-            </i>
-          <span v-if="showText" class="text">{{curScore||score}}分</span>
-          </span>
+        
         </div>
-      </div>
+        <!-- <div style="height:100px;background-color:blue"  >
+            <el-rate  value="3" v-model="value1"></el-rate>
+          </div> -->
     </template>
  
   </div> 
-
 </template>
 
 <script>
+// import {StarRating} from 'vue-rate-it';
+// import {HeartRating}  from 'vue-star-rating';
+// import HeartRating from 'vue-rate-it';
+// import Reta from "@/components/StarRate.vue"
 
 export default {
   name: 'ChatWindow',
@@ -47,8 +51,12 @@ export default {
     showText: {
       type: Boolean,
       default: false
-    }
+    },
+    
   },
+  // components: {
+  //   HeartRating
+  // },
   watch: {
     'selectedChat.messages': function() {
       // use Vue.nextTick to ensure scrolling after the update of DOM
@@ -88,15 +96,14 @@ export default {
     return false;
   
   },
+  
     menuList() {
       console.log(1);
       return [
         {
           text: '打分',
           onClick: () => {
-            console.log(1);
-            // console.log(message);
-            // this.toggleRate(message);
+            this.showt();
           }
         },
         {
@@ -109,16 +116,24 @@ export default {
   },
   data(){
     return{
+      nowindex:0,
       curScore: '',
       width:'',
       welcome_expert:false,
-      showRate:false,
+      value1: null,
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+      // showRate:false,
       // parent:require("@/assets/user2.png"),
       // bot:require("@/assets/gpt.png"),
       // expert:require("@/assets/advisor.png")
+     
     }
   },
   methods: {
+    chow(index){
+      console.log(index);
+      this.$data.nowindex=index
+    },
     scrollToBottom() {
       const chatWindow = this.$refs.chatWindow;
       chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -127,6 +142,14 @@ export default {
       console.log('显示菜单');
       
     },
+    showt(){
+      // console.log(this.$el.children[this.$data.nowindex].style);
+      // this.display='block';
+      // this.color='red';
+      this.$el.children[this.$data.nowindex].children[0].children[3].style="display:block;"
+      // this.colorStyle.color='red';
+      // this.colorStyle.display='block';
+  },
     toggleRate(message) {
     message.showRate = !message.showRate; // Toggle the specific message's rate visibility
   },
@@ -251,4 +274,17 @@ export default {
 .pre-wrap {
   white-space: pre-wrap;
 }
+
+.score{
+  display:none;
+  height:30px;
+  padding-bottom: 10px;
+  position:relative;
+  left:50;
+}
+
+.el-rate{
+  display:inline-block;
+}
+
 </style>
