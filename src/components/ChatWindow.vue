@@ -10,30 +10,23 @@
             <img :src="require('../assets/'+message.sender_type+'.png')"/>
           </div>
           <div :class="{'speech-expert': message.sender_type === 'bot'||message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}" ></div>
-          <div  @pop="showt(item)" :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" :style="colorStyle" >
+          <div  @pop="showt(item)" :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" >
             {{ message.content }}
           </div>
           <div class="score">
             <span style="display: inline">打分：</span>
             <el-rate v-model="value1"></el-rate>
-           
           </div>
         </div>
         
         </div>
-        <!-- <div style="height:100px;background-color:blue"  >
-            <el-rate  value="3" v-model="value1"></el-rate>
-          </div> -->
     </template>
  
   </div> 
 </template>
 
 <script>
-// import {StarRating} from 'vue-rate-it';
-// import {HeartRating}  from 'vue-star-rating';
-// import HeartRating from 'vue-rate-it';
-// import Reta from "@/components/StarRate.vue"
+
 
 export default {
   name: 'ChatWindow',
@@ -54,9 +47,7 @@ export default {
     },
     
   },
-  // components: {
-  //   HeartRating
-  // },
+
   watch: {
     'selectedChat.messages': function() {
       // use Vue.nextTick to ensure scrolling after the update of DOM
@@ -91,14 +82,12 @@ export default {
     if (!this.selectedChat || !Array.isArray(this.selectedChat.messages) || this.selectedChat.messages.length < 2) {
       return false;
     }
-    // console.log("what is"+this.selectedChat.messages[0]);
 
     return false;
   
   },
   
     menuList() {
-      console.log(1);
       return [
         {
           text: '打分',
@@ -108,7 +97,23 @@ export default {
         },
         {
           text: '反馈', onClick: () => {
-            console.log(2)
+            console.log(2);
+            this.$prompt('请对这句回答做出评价', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          inputPattern:/\S/,
+          inputErrorMessage: '输入内容为空'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '反馈成功'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '取消输入'
+          });       
+        });
           }
         }
       ]
@@ -122,10 +127,6 @@ export default {
       welcome_expert:false,
       value1: null,
       colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      // showRate:false,
-      // parent:require("@/assets/user2.png"),
-      // bot:require("@/assets/gpt.png"),
-      // expert:require("@/assets/advisor.png")
      
     }
   },
@@ -143,12 +144,8 @@ export default {
       
     },
     showt(){
-      // console.log(this.$el.children[this.$data.nowindex].style);
-      // this.display='block';
-      // this.color='red';
       this.$el.children[this.$data.nowindex].children[0].children[3].style="display:block;"
-      // this.colorStyle.color='red';
-      // this.colorStyle.display='block';
+   
   },
     toggleRate(message) {
     message.showRate = !message.showRate; // Toggle the specific message's rate visibility

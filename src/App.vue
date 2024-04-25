@@ -29,7 +29,7 @@ export default {
     ChatList,
     ChatWindow,
     InputArea,
-    ExpertFeedback,
+    // ExpertFeedback,
     // ContextMenu
 
   },

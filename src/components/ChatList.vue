@@ -62,12 +62,12 @@ export default {
         this.$prompt('请对此次对话做出评价', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+          inputPattern:/\S/,
           inputErrorMessage: '输入内容为空'
-        }).then(({ value }) => {
+        }).then(() => {
           this.$message({
             type: 'success',
-            message: '你的邮箱是: ' + value
+            message: '反馈成功'
           });
         }).catch(() => {
           this.$message({
@@ -134,6 +134,12 @@ export default {
 }
 .chat-date-header img{
  width: 20px;
+}
+.chat-item button{
+  padding:0px;
+  position:absolute;
+  top:30;
+  right:0;
 }
 /* NEW */
 #notice{
