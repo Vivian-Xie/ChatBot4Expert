@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import api from '../api';
+
 export default {
   name: 'ChatList',
   props: ['chats', 'selectedChatId'],
@@ -59,10 +61,29 @@ export default {
           cancelButtonText: '取消',
           inputPattern:/\S/,
           inputErrorMessage: '输入内容为空'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '反馈成功'
+        }).then(({ value }) => {
+          api.setChatExpertFeedback(this.selectedChatId, value).then(response => {
+              console.log('Expert feedback sent:', response.data);
+              if (response.data.success) {
+                this.$message({
+                  type: 'success',
+                  message: '反馈成功'
+                });
+              }
+              else {
+                console.error('Fail to send feedback');
+                this.$message({
+                  type: 'error',
+                  message: '反馈失败'
+                });
+              }
+            })
+            .catch(error => {
+              console.error('Error sending feedback:', error);
+              this.$message({
+                type: 'error',
+                message: '反馈出错'
+              });
           });
         }).catch(() => {
           this.$message({
@@ -71,7 +92,6 @@ export default {
           });       
         });
       }
-    
   },
   computed: {
     chatsUrgent() {

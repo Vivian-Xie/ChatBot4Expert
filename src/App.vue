@@ -58,6 +58,7 @@ export default {
           .catch(error => {
             console.error('Error sending message:', error);
         });
+        this.setChatAsChecked();
       }
     },
     fetchMessages() {
@@ -89,6 +90,17 @@ export default {
         .catch(error => {
           console.error('Error fetching chats and messages:', error);
         });
+    },
+    setChatAsChecked() {
+      if (this.selectedChat) {
+        api.setChatChecked(this.selectedChat.id)
+          .then(response => {
+            console.log('Chat checked:', response.data);
+          })
+          .catch(error => {
+            console.error('Error setting chat as checked:', error);
+          });
+      }
     },
   },
   mounted() {
