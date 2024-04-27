@@ -3,14 +3,12 @@
     <div class="container-fluid h-100">
       <div class="row h-100">
         <div class="col-2" id="chatlist">
-          <chat-list :chats="chats" :selectedChatId="selectedChatId" @chatSelected="selectChat" @createChat="createNewChat"></chat-list>
+          <chat-list :chats="chats" :selectedChatId="selectedChatId" @chatSelected="selectChat"></chat-list>
         </div>
         <div class="col-10 d-flex flex-column" id="chatwin">
           <chat-window :selectedChat="selectedChat" class="flex-grow-1 overflow-auto" ></chat-window>
           <input-area v-if="selectedChat" @messageSent="sendMessage" class="mt-auto"></input-area>
         </div>
-      
-
       </div>
     </div>
   </div>
@@ -43,22 +41,6 @@ export default {
   },
   
   methods: {
-
-    createNewChat() {
-      const userId = 1;
-      const expertId = 1;
-      api.createChat(userId, expertId)
-        .then(response => {
-          const newChat = response.data;
-          this.chats.push(newChat);
-          this.selectedChat = newChat;
-          this.selectedChatId = newChat.id;
-          console.log('New chat created:', newChat);
-        })
-        .catch(error => {
-          console.error('Error creating new chat:', error);
-        });
-    },
     selectChat(chat) {
       this.selectedChat = chat;
       this.selectedChatId = chat.id;
@@ -66,10 +48,9 @@ export default {
     },
     sendMessage(content) {
       if (this.selectedChat && content) {
-        // ToDo: get user id
-        const userId = 1;
-
-        api.sendMessage(this.selectedChat.id, userId, 'expert', content)
+        // ToDo: get expert id
+        const expertId = 1;
+        api.createMessage(this.selectedChat.id, 'expert', expertId, content)
           .then(response => {
             console.log('Message sent:', response.data);
             this.fetchMessages();
@@ -82,11 +63,11 @@ export default {
     fetchMessages() {
       if (this.selectedChat) {
         const curId = this.selectedChat.id;
-        api.getMessages(curId)
+        api.getChatMessages(curId)
           .then(response => {
             console.log('Message received:', response.data);
-            if (this.selectedChat.id == curId && response.data.length != this.selectedChat.messages.length) {
-              this.selectedChat.messages = response.data;
+            if (this.selectedChat.id == curId && response.data.messages.length != this.selectedChat.messages.length) {
+              this.selectedChat.messages = response.data.messages;
             }
           })
           .catch(error => {
@@ -95,13 +76,12 @@ export default {
       }
     },
     fetchChatsAndMessages() {
-      // ToDo: get user id
-      const userId = 1;
-
-      api.getExpertChats(userId)
+      // ToDo: get expert id
+      const expertId = 1;
+      api.getExpertChats(expertId)
         .then(response => {
           console.log('Chats and messages received:', response.data);
-          this.chats = response.data;
+          this.chats = response.data.chats;
           if (this.chats.length > 0) {
             this.selectChat(this.chats[this.chats.length - 1]);
           }

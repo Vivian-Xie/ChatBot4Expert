@@ -61,7 +61,7 @@ export default {
       if (!this.selectedChat || !Array.isArray(this.selectedChat.messages)) {
         return [];
       }
-      const filteredMessages = this.selectedChat.messages.filter(message => message.score >= 0.5);
+      const filteredMessages = this.selectedChat.messages.filter(message => message.machine_score >= 0.5);
       const processedMessages = filteredMessages.map(message => ({
         ...message,
         content: message.content.split('\n\n').filter(part => part.trim() !== '')

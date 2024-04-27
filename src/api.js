@@ -11,58 +11,21 @@ const apiClient = axios.create({
 });
 
 export default {
-  sendMessage(chatId, userId, senderType, messageContent) {
-    return apiClient.post('/messages', {
-      chat_id: chatId,
-      sender_id: userId,
-      sender_type: senderType,
-      content: messageContent
+  createMessage(chat_id, sender_type, sender_id, content) {
+    return apiClient.post('/create_message', {
+      chat_id: chat_id,
+      sender_type: sender_type,
+      sender_id: sender_id,
+      content: content
     });
   },
-  createChat(parentId, expertId) {
-    return apiClient.post('/create_chats', {
-      parent_id: parentId,
-      expert_id: expertId
-    });
+  getExpertChats(expert_id) {
+    return apiClient.get(`/experts/${expert_id}/get_chats`);
   },
-  getMessages(chatId) {
-    return apiClient.get(`/chats/${chatId}/messages`);
+  getChatMessages(chat_id) {
+    return apiClient.get(`/chats/${chat_id}/get_messages`);
   },
-  // getUserChats(userId) {
-  //   return apiClient.get(`/users/${userId}/get_chats`);
-  // },
-  setChatSuspended(chatId) {
-    return apiClient.post(`/chats/${chatId}/set_suspended`);
-  },
-  getParentChats(parentId) {
-    return apiClient.get(`/users/${parentId}/get_chats`);
-  },
-  getExpertChats(expertId) {
-    return apiClient.get(`/users/${expertId}/get_chats`);
-  },
-  getParentInfo(parentId) {
-    return apiClient.get(`/parents/${parentId}/get_parent_info`);
-  },
-  getExpertInfo(expertId) {
-    return apiClient.get(`/users/${expertId}/get_expert_info`);
-  },
-  createParent(username, phone, passwordHash) {
-    return apiClient.post('/create_parent', {
-      username: username,
-      phone: phone,
-      password_hash: passwordHash
-    });
-  },
-  updateExpertInfo(expertId, info) {
-    return apiClient.post(`/experts/${expertId}/update_expert_info`, {
-      parent_info: info
-    });
-  },
-  createExpert(username, phone, passwordHash) {
-    return apiClient.post('/create_expert', {
-      username: username,
-      phone: phone,
-      password_hash: passwordHash
-    });
+  setChatChecked(chat_id) {
+    return apiClient.post(`/chats/${chat_id}/set_checked`);
   },
 };
