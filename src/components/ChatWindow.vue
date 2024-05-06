@@ -4,18 +4,26 @@
       <div class="expert_welcome" v-if="showExpertWelcome">
         <div>专家已真身介入</div>
       </div>
-      <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}" @pop="showt(e,index)"  @mouseenter="chow(index)">
+      <div v-for="(message, index) in processedMessages" :key="index" :class="{'message-wrapper-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'message-wrapper-parent': message.sender_type === 'parent'}"   @mouseenter="getChatBoxIndex(index)">
         <div class="chat-content" >
           <div :class="{'avatar-expert': message.sender_type === 'expert'|| message.sender_type === 'bot', 'avatar-parent': message.sender_type === 'parent'}">
             <img :src="require('../assets/'+message.sender_type+'.png')"/>
           </div>
           <div :class="{'speech-expert': message.sender_type === 'bot'||message.sender_type === 'expert', 'speech-parent': message.sender_type === 'parent'}" ></div>
-          <div  @pop="showt(item)" :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" >
-            {{ message.content }}
-          </div>
-          <div class="score">
-            <span style="display: inline">打分：</span>
-            <el-rate v-model="value1"></el-rate>
+          <div class="messageInnerWrapper">
+            <div class="messageInnerWrapper2">
+
+              <div  @pop="showStar(item)" :class="{'parent-message': message.sender_type === 'parent', 'expert-message': message.sender_type === 'expert'|| message.sender_type === 'bot', 'pre-wrap': true}" v-contextmenu="{menuList, onShow}" >
+              <div style=""></div>
+                <div class="botText"> {{ message.content }}</div>
+               
+              </div>
+              <div class="score">
+                <span style="display: inline">打分：</span>
+                <el-rate v-model="value1"></el-rate>
+              </div>
+            </div>
+            
           </div>
         </div>
         
@@ -92,7 +100,7 @@ export default {
         {
           text: '打分',
           onClick: () => {
-            this.showt();
+            this.showStar();
           }
         },
         {
@@ -115,6 +123,12 @@ export default {
           });       
         });
           }
+        },
+        {
+          text: '修改',
+          onClick: () => {
+            this.showChangeText();
+          }
         }
       ]
     },
@@ -127,12 +141,12 @@ export default {
       welcome_expert:false,
       value1: null,
       colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-     
+      editAllowed: true,
     }
   },
   methods: {
-    chow(index){
-      console.log(index);
+    getChatBoxIndex(index){
+      // console.log(index);
       this.$data.nowindex=index
     },
     scrollToBottom() {
@@ -143,9 +157,49 @@ export default {
       console.log('显示菜单');
       
     },
-    showt(){
-      this.$el.children[this.$data.nowindex].children[0].children[3].style="display:block;"
-   
+    showChangeText(){
+      console.log("显示修改");
+      if(this.editAllowed){
+        // if ()s
+        this.editAllowed=false;
+        let targetElement = this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0].textContent;
+
+        this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0].textContent=targetElement+'\n--------------------------------------------------\n';
+        let messageElement = this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0];
+        console.log(this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0])
+      // 创建一个新的 input 元素
+      let input = document.createElement('p');
+      input.className='editBox'
+      input.textContent  = targetElement // 设置初始值为当前文本内容
+      input.setAttribute('contenteditable', 'true'); 
+      // input.rows = '3';
+      input.style.width = '100%';  // 根据需要调整样式
+  
+      // 替换当前元素的内容为输入框
+      // messageElement.innerHTML = '';
+      messageElement.appendChild(input);
+      input.focus();
+  
+      // 监听键盘事件处理提交
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          // 划线
+          // console.log(messageElement.children[0])
+          messageElement.style.textDecoration='line-through';
+          messageElement.children[0].style.fontWeight='bold';
+          // messageElement.children[0].style.textDecoration='none';
+          // 移除输入框
+          input.setAttribute('contenteditable', 'false'); 
+          this.editAllowed=true;
+        }
+      });
+      }
+    },
+    showStar(){
+      //message wrapper->chat-content->
+      this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[1].style="display:block;"
+      // console.log(this.$el)
   },
     toggleRate(message) {
     message.showRate = !message.showRate; // Toggle the specific message's rate visibility
@@ -202,7 +256,7 @@ export default {
   padding: 10px;
   border-radius: 10px;
   margin-bottom: 10px;
-  max-width: 70%;
+  max-width: 77%;
   display: inline-block;
   word-wrap: break-word;
 }
@@ -214,9 +268,13 @@ export default {
   border-radius: 10px;
   margin-bottom: 10px;
   max-width: 70%;
-  display: inline-block;
+  /* display: inline-block; */
   word-wrap: break-word;
-  align-self: flex-start;
+  align-self: flex-end;
+}
+
+.expert-message .botText{
+  margin-bottom:0px;
 }
 
 .speech-expert{
@@ -241,7 +299,18 @@ export default {
   border-top:6px solid transparent;
 }
 
-
+.messageInnerWrapper{
+  position: relative;
+  right:0;
+  display:flex;
+  justify-content:flex-end;
+}
+.messageInnerWrapper2{
+  display: flex;
+  position: relative;
+  right:0;
+  flex-direction: column;
+}
 .expert_welcome{
   width:100%;
   height:25px;
@@ -275,13 +344,28 @@ export default {
 .score{
   display:none;
   height:30px;
-  padding-bottom: 10px;
+  margin-bottom: 8px;
   position:relative;
   left:50;
+  float:right;
 }
 
 .el-rate{
   display:inline-block;
+}
+
+.editBox{
+  background-color: #87CEEB;
+  border:none;
+  color:white;
+  outline:none;
+  width:100%;
+  display:inline-block;
+  /* height:auto; */
+  /* white-space:nowrap; */
+  overflow:auto;
+  resize:none;
+  /* text-overflow:ellipsis;  */
 }
 
 </style>

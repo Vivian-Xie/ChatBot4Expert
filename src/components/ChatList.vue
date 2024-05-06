@@ -63,7 +63,7 @@ export default {
           inputErrorMessage: '输入内容为空'
         }).then(({ value }) => {
           api.setChatExpertFeedback(this.selectedChatId, value).then(response => {
-              console.log('Expert feedback sent:', response.data);
+              console.log('Expert feedback sent:', response.config.data);
               if (response.data.success) {
                 this.$message({
                   type: 'success',

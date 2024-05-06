@@ -55,7 +55,7 @@
 }
 
 .context-menu-item {
-  line-height: 40px;
+  line-height: 32px;
   padding: 0 10px;
   font-size: 14px;
 }
