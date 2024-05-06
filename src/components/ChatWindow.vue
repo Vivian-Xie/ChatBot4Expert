@@ -20,7 +20,7 @@
               </div>
               <div class="score">
                 <span style="display: inline">打分：</span>
-                <el-rate v-model="value1"></el-rate>
+                <el-rate v-model="scores[index]"></el-rate>
               </div>
             </div>
             
@@ -41,28 +41,35 @@ export default {
   props: {
     chats: Array,
     selectedChat: Object,
-    score: {
-      type: Number,
-      default: 0
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    showText: {
-      type: Boolean,
-      default: false
-    },
+    // scores: [],
     
   },
-
+  data(){
+    return{
+      nowindex:0,
+      curScore: '',
+      width:'',
+      welcome_expert:false,
+      value1: null,
+      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
+      editAllowed: true,
+      scores:[1,2,3,4,1,2,3,4,1,2,3,4,1,2,3,4],
+    }
+  },
   watch: {
     'selectedChat.messages': function() {
       // use Vue.nextTick to ensure scrolling after the update of DOM
       this.$nextTick(() => {
         this.scrollToBottom();
       });
-    }
+    },
+    'processedMessages': {
+      handler(newMessages) {
+      this.scores = newMessages.map(() => 0); // 初始化所有分数为0
+    },
+      immediate: true, // 立即触发，确保scores数组与processedMessages长度一致
+
+}
   },
   computed: {
     processedMessages() {
@@ -111,10 +118,12 @@ export default {
           cancelButtonText: '取消',
           inputPattern:/\S/,
           inputErrorMessage: '输入内容为空'
-        }).then(() => {
+        }).then((value) => {
+          // console.log(value);
+          this.$emit('sendComment', value),
           this.$message({
             type: 'success',
-            message: '反馈成功'
+            message: '反馈成功',
           });
         }).catch(() => {
           this.$message({
@@ -133,17 +142,7 @@ export default {
       ]
     },
   },
-  data(){
-    return{
-      nowindex:0,
-      curScore: '',
-      width:'',
-      welcome_expert:false,
-      value1: null,
-      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      editAllowed: true,
-    }
-  },
+  
   methods: {
     getChatBoxIndex(index){
       // console.log(index);
@@ -163,10 +162,10 @@ export default {
         // if ()s
         this.editAllowed=false;
         let targetElement = this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0].textContent;
-
+        console.log(this.$el)
         this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0].textContent=targetElement+'\n--------------------------------------------------\n';
         let messageElement = this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0];
-        console.log(this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0])
+        // console.log(this.$el.children[this.$data.nowindex].children[0].children[2].children[0].children[0])
       // 创建一个新的 input 元素
       let input = document.createElement('p');
       input.className='editBox'
@@ -226,6 +225,7 @@ export default {
   updated() {
     this.scrollToBottom();
   },
+
 }
 </script>
 

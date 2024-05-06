@@ -34,7 +34,7 @@
           clickHandler(item) {
               if (typeof item.onClick === "function") {
                   item.onClick();
-                  console.log('this is from the context menu'+item);
+                //   console.log('this is from the context menu'+item);
                   this.$emit("pop",item);
                   
               }
